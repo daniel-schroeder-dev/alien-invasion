@@ -16,8 +16,16 @@ class Ship:
         self.rect.centerx = self.screen_rect.centerx
         self.rect.bottom =  self.screen_rect.bottom
 
+        # Determine if the ship should be moving to the right.
+        self.moving_right = False
+
     def blitme(self):
         """Draw the Ship at its current location."""
         self.screen.blit(self.image, self.rect)
 
-        
+    def update(self):
+        """Move the ship if the moving_(direction) flag is set."""
+        if self.moving_right:
+            self.rect.centerx += 1
+
+
