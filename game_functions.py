@@ -4,17 +4,17 @@ import pygame
 
 from bullet import Bullet
 
-def check_events(ai_settings, screen, ship, bullets):
+def check_events(ai_settings, bullets, screen, ship):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(event, ai_settings, ship, screen, bullets)
+            check_keydown_events(ai_settings, bullets, event, screen, ship)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
 
-def check_keydown_events(event, ai_settings, ship, screen, bullets):
+def check_keydown_events(ai_settings, bullets, event, screen, ship):
     """Handle keydown events."""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -35,7 +35,7 @@ def fire_bullet(ai_settings, bullets, screen, ship):
         bullet = Bullet(ai_settings, screen, ship)
         bullets.add(bullet)
 
-def update_screen(ai_settings, screen, ship, bullets):
+def update_screen(ai_settings, bullets, screen, ship):
     """Update images on the screen and flip to the new screen."""
     screen.fill(ai_settings.bg_color)
     

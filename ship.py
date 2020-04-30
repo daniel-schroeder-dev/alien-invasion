@@ -3,7 +3,7 @@ import pygame
 class Ship:
     """A Ship for Alien Invasion."""
 
-    def __init__(self, ship_speed_factor, screen):
+    def __init__(self, screen, ship_speed_factor):
         """Initialize the ship and set its starting position."""
         self.ship_speed_factor = ship_speed_factor
         self.screen = screen
