@@ -34,21 +34,27 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
+def create_alien(alien_num):
+    alien = Alien()
+    alien.rect.x = alien.rect.width + alien.rect.width * 2 * alien_num
+    return alien
+
 def create_alien_fleet(screen, screen_width):
-    alien_width = Alien().rect.width
-    available_screen_width = screen_width - (2 * alien_width)
-    number_aliens = int(available_screen_width / (2 * alien_width))
+    num_aliens = get_num_aliens(screen, screen_width)
     aliens = Group()
-    for alien_num in range(number_aliens):
-        alien = Alien()
-        alien.rect.x = alien_width + alien_width * 2 * alien_num
-        aliens.add(alien)
+    for alien_num in range(num_aliens):
+        aliens.add(create_alien(alien_num))
     return aliens
 
 def fire_bullet(ai_settings, bullets, screen, ship):
     if len(bullets) < ai_settings.bullets_allowed:
         bullet = Bullet(ai_settings, screen, ship)
         bullets.add(bullet)
+
+def get_num_aliens(screen, screen_width):
+    alien_width = Alien().rect.width
+    available_screen_width = screen_width - (2 * alien_width)
+    return int(available_screen_width / (2 * alien_width))
 
 def update_screen(ai_settings, aliens, bullets, screen, ship):
     """Update images on the screen and flip to the new screen."""
