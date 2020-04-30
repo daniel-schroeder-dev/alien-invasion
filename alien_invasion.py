@@ -15,7 +15,11 @@ def run_game():
 
     ship = Ship(screen, ai_settings.ship_speed_factor)
     bullets = Group()
-    aliens = gf.create_alien_fleet(screen, ai_settings.screen_width)
+    aliens = gf.create_alien_fleet(
+        screen, ai_settings.screen_width, 
+        ai_settings.screen_height, ship.rect.height)
+
+    
 
     # Main game loop.
     while True:

@@ -34,16 +34,19 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def create_alien(alien_num):
+def create_alien(alien_num, row_num):
     alien = Alien()
     alien.rect.x = alien.rect.width + alien.rect.width * 2 * alien_num
+    alien.rect.y = alien.rect.height + alien.rect.height * 2 * row_num
     return alien
 
-def create_alien_fleet(screen, screen_width):
+def create_alien_fleet(screen, screen_width, screen_height, ship_height):
     num_aliens = get_num_aliens(screen, screen_width)
+    num_rows = get_num_rows(screen_height, ship_height)
     aliens = Group()
-    for alien_num in range(num_aliens):
-        aliens.add(create_alien(alien_num))
+    for row_num in range(num_rows):
+        for alien_num in range(num_aliens):
+            aliens.add(create_alien(alien_num, row_num))
     return aliens
 
 def fire_bullet(ai_settings, bullets, screen, ship):
@@ -55,6 +58,11 @@ def get_num_aliens(screen, screen_width):
     alien_width = Alien().rect.width
     available_screen_width = screen_width - (2 * alien_width)
     return int(available_screen_width / (2 * alien_width))
+
+def get_num_rows(screen_height, ship_height):
+    alien_height = Alien().rect.height
+    avail_screen_height = screen_height - (ship_height + alien_height * 3)
+    return int(avail_screen_height / (alien_height * 2))
 
 def update_screen(ai_settings, aliens, bullets, screen, ship):
     """Update images on the screen and flip to the new screen."""
