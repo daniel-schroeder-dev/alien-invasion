@@ -23,16 +23,3 @@ class Alien(Sprite):
     def update(self):
 
         self.rect.x += self.ai_settings.alien_fleet_direction * self.ai_settings.alien_speed_factor
-
-        # if self.moving_right:
-        #     self.rect.x += 1
-        #     # if self.rect.x > self.start_x + self.rect.width * 2:
-        #     if self.rect.x > self.screen_width - self.rect.width:
-        #         self.moving_right = False
-        #         self.hit_right_edge = True
-        # else:
-        #     self.rect.x -= 1
-        #     # if self.rect.x == self.start_x - self.rect.width / 2:
-        #     if self.rect.x <= self.rect.width / 2:
-        #         self.moving_right = True
-        #         self.hit_left_edge = True

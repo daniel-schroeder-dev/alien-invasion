@@ -27,11 +27,9 @@ def run_game():
         gf.update_bullets(bullets)
         if not (it % 3):
             aliens.update()
-            if gf.detect_edge_collision(aliens):
+            if gf.detect_edge_collision(aliens, screen):
                 gf.change_alien_fleet_direction(ai_settings, aliens)
             
         gf.update_screen(ai_settings, aliens, bullets, screen, ship)
-
-
 
 run_game()

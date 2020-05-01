@@ -56,21 +56,12 @@ def create_alien_fleet(screen, ai_settings, ship_height):
             aliens.add(create_alien(ai_settings, alien_num, row_num))
     return aliens
 
-def detect_edge_collision(aliens):
-    # collision = {
-    #     'hit_right_edge': False,
-    #     'hit_left_edge': False,
-    #     }
+def detect_edge_collision(aliens, screen):
     for alien in aliens.sprites():
-        if alien.rect.x > alien.screen_width - alien.rect.width or alien.rect.x <= alien.rect.width / 2:
+        if alien.rect.right >= screen.get_rect().right:
             return True
-        # if alien.hit_right_edge:
-        #     collision['hit_right_edge'] = True
-        #     break
-        # elif alien.hit_left_edge:
-        #     collision['hit_left_edge'] = True
-        #     break
-    # return collision
+        elif alien.rect.left == 0:
+            return True
     return False
 
 def fire_bullet(ai_settings, bullets, screen, ship):
