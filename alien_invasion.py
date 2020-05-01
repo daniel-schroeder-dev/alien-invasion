@@ -24,7 +24,10 @@ def run_game():
         it += 1
         gf.check_events(ai_settings, bullets, screen, ship)
         ship.update()
-        gf.update_bullets(bullets)
+        gf.update_bullets(aliens, bullets)
+        if len(aliens) is 0:
+            aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
+            bullets.empty()
         if not (it % 3):
             aliens.update()
             if gf.detect_edge_collision(aliens, screen):
