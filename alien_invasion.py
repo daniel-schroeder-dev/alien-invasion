@@ -15,9 +15,7 @@ def run_game():
 
     ship = Ship(screen, ai_settings.ship_speed_factor)
     bullets = Group()
-    aliens = gf.create_alien_fleet(
-        screen, ai_settings.screen_width, 
-        ai_settings.screen_height, ship.rect.height)
+    aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
 
     it = 0
 
@@ -27,11 +25,10 @@ def run_game():
         gf.check_events(ai_settings, bullets, screen, ship)
         ship.update()
         gf.update_bullets(bullets)
-        if not (it % 5):
+        if not (it % 3):
             aliens.update()
-            collision = gf.detect_edge_collision(aliens)
-            if True in collision.values():
-                gf.adjust_alien_direction(aliens, collision)
+            if gf.detect_edge_collision(aliens):
+                gf.change_alien_fleet_direction(ai_settings, aliens)
             
         gf.update_screen(ai_settings, aliens, bullets, screen, ship)
 

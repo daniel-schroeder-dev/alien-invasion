@@ -3,9 +3,10 @@ from pygame.sprite import Sprite
 
 class Alien(Sprite):
 
-    def __init__(self, screen_width=''):
+    def __init__(self, ai_settings):
         super().__init__()
-        self.screen_width = screen_width
+        self.screen_width = ai_settings.screen_width
+        self.ai_settings = ai_settings
 
         self.image = pygame.image.load('./images/alien.bmp')
         self.rect = self.image.get_rect()
@@ -20,15 +21,18 @@ class Alien(Sprite):
         self.hit_right_edge = False
 
     def update(self):
-        if self.moving_right:
-            self.rect.x += 1
-            # if self.rect.x > self.start_x + self.rect.width * 2:
-            if self.rect.x > self.screen_width - self.rect.width:
-                self.moving_right = False
-                self.hit_right_edge = True
-        else:
-            self.rect.x -= 1
-            # if self.rect.x == self.start_x - self.rect.width / 2:
-            if self.rect.x <= self.rect.width / 2:
-                self.moving_right = True
-                self.hit_left_edge = True
+
+        self.rect.x += self.ai_settings.alien_fleet_direction * self.ai_settings.alien_speed_factor
+
+        # if self.moving_right:
+        #     self.rect.x += 1
+        #     # if self.rect.x > self.start_x + self.rect.width * 2:
+        #     if self.rect.x > self.screen_width - self.rect.width:
+        #         self.moving_right = False
+        #         self.hit_right_edge = True
+        # else:
+        #     self.rect.x -= 1
+        #     # if self.rect.x == self.start_x - self.rect.width / 2:
+        #     if self.rect.x <= self.rect.width / 2:
+        #         self.moving_right = True
+        #         self.hit_left_edge = True

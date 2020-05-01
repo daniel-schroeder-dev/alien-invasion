@@ -6,17 +6,10 @@ from pygame.sprite import Group
 from bullet import Bullet
 from alien import Alien
 
-def adjust_alien_direction(aliens, collision):
-    if collision['hit_right_edge']:
-        for alien in aliens.sprites():
-            alien.moving_right = False
-            alien.hit_right_edge = False
-            alien.rect.y += 8
-    elif collision['hit_left_edge']:
-        for alien in aliens.sprites():
-            alien.moving_right = True
-            alien.hit_left_edge = False
-            alien.rect.y += 8
+def change_alien_fleet_direction(ai_settings, aliens):
+    ai_settings.alien_fleet_direction *= -1
+    for alien in aliens.sprites():
+        alien.rect.y += ai_settings.alien_vertical_speed_factor
 
 def check_events(ai_settings, bullets, screen, ship):
     """Respond to keypresses and mouse events."""
@@ -46,50 +39,55 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def create_alien(alien_num, row_num, screen_width):
-    alien = Alien(screen_width)
+def create_alien(ai_settings, alien_num, row_num):
+    alien = Alien(ai_settings)
     alien.rect.x = alien.rect.width + alien.rect.width * 2 * alien_num
     alien.rect.y = alien.rect.height + alien.rect.height * 2 * row_num
     alien.start_x = alien.rect.x
     alien.start_y = alien.rect.y
     return alien
 
-def create_alien_fleet(screen, screen_width, screen_height, ship_height):
-    num_aliens = get_num_aliens(screen, screen_width)
-    num_rows = get_num_rows(screen_height, ship_height)
+def create_alien_fleet(screen, ai_settings, ship_height):
+    num_aliens = get_num_aliens(ai_settings, screen)
+    num_rows = get_num_rows(ai_settings, ship_height)
     aliens = Group()
     for row_num in range(num_rows):
         for alien_num in range(num_aliens):
-            aliens.add(create_alien(alien_num, row_num, screen_width))
+            aliens.add(create_alien(ai_settings, alien_num, row_num))
     return aliens
 
 def detect_edge_collision(aliens):
-    collision = {
-        'hit_right_edge': False,
-        'hit_left_edge': False,
-        }
+    # collision = {
+    #     'hit_right_edge': False,
+    #     'hit_left_edge': False,
+    #     }
     for alien in aliens.sprites():
-        if alien.hit_right_edge:
-            collision['hit_right_edge'] = True
-            break
-        elif alien.hit_left_edge:
-            collision['hit_left_edge'] = True
-            break
-    return collision
+        if alien.rect.x > alien.screen_width - alien.rect.width or alien.rect.x <= alien.rect.width / 2:
+            return True
+        # if alien.hit_right_edge:
+        #     collision['hit_right_edge'] = True
+        #     break
+        # elif alien.hit_left_edge:
+        #     collision['hit_left_edge'] = True
+        #     break
+    # return collision
+    return False
 
 def fire_bullet(ai_settings, bullets, screen, ship):
     if len(bullets) < ai_settings.bullets_allowed:
         bullet = Bullet(ai_settings, screen, ship)
         bullets.add(bullet)
 
-def get_num_aliens(screen, screen_width):
-    alien_width = Alien().rect.width
-    available_screen_width = screen_width - (2 * alien_width)
+def get_num_aliens(ai_settings, screen):
+    alien_width = Alien(ai_settings).rect.width
+    available_screen_width = ai_settings.screen_width - (2 * alien_width)
     return int(available_screen_width / (2 * alien_width))
 
-def get_num_rows(screen_height, ship_height):
-    alien_height = Alien().rect.height
-    avail_screen_height = screen_height - (ship_height + alien_height * 3)
+def get_num_rows(ai_settings, ship_height):
+    alien_height = Alien(ai_settings).rect.height
+    avail_screen_height = (
+        ai_settings.screen_height - 
+        (ship_height + alien_height * 3))
     return int(avail_screen_height / (alien_height * 2))
 
 def update_screen(ai_settings, aliens, bullets, screen, ship):
