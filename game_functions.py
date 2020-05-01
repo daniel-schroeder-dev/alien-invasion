@@ -6,6 +6,18 @@ from pygame.sprite import Group
 from bullet import Bullet
 from alien import Alien
 
+def adjust_alien_direction(aliens, collision):
+    if collision['hit_right_edge']:
+        for alien in aliens.sprites():
+            alien.moving_right = False
+            alien.hit_right_edge = False
+            alien.rect.y += 8
+    elif collision['hit_left_edge']:
+        for alien in aliens.sprites():
+            alien.moving_right = True
+            alien.hit_left_edge = False
+            alien.rect.y += 8
+
 def check_events(ai_settings, bullets, screen, ship):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
@@ -34,10 +46,12 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def create_alien(alien_num, row_num):
-    alien = Alien()
+def create_alien(alien_num, row_num, screen_width):
+    alien = Alien(screen_width)
     alien.rect.x = alien.rect.width + alien.rect.width * 2 * alien_num
     alien.rect.y = alien.rect.height + alien.rect.height * 2 * row_num
+    alien.start_x = alien.rect.x
+    alien.start_y = alien.rect.y
     return alien
 
 def create_alien_fleet(screen, screen_width, screen_height, ship_height):
@@ -46,8 +60,22 @@ def create_alien_fleet(screen, screen_width, screen_height, ship_height):
     aliens = Group()
     for row_num in range(num_rows):
         for alien_num in range(num_aliens):
-            aliens.add(create_alien(alien_num, row_num))
+            aliens.add(create_alien(alien_num, row_num, screen_width))
     return aliens
+
+def detect_edge_collision(aliens):
+    collision = {
+        'hit_right_edge': False,
+        'hit_left_edge': False,
+        }
+    for alien in aliens.sprites():
+        if alien.hit_right_edge:
+            collision['hit_right_edge'] = True
+            break
+        elif alien.hit_left_edge:
+            collision['hit_left_edge'] = True
+            break
+    return collision
 
 def fire_bullet(ai_settings, bullets, screen, ship):
     if len(bullets) < ai_settings.bullets_allowed:

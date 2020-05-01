@@ -19,14 +19,22 @@ def run_game():
         screen, ai_settings.screen_width, 
         ai_settings.screen_height, ship.rect.height)
 
-    
+    it = 0
 
     # Main game loop.
     while True:
+        it += 1
         gf.check_events(ai_settings, bullets, screen, ship)
         ship.update()
         gf.update_bullets(bullets)
+        if not (it % 5):
+            aliens.update()
+            collision = gf.detect_edge_collision(aliens)
+            if True in collision.values():
+                gf.adjust_alien_direction(aliens, collision)
+            
         gf.update_screen(ai_settings, aliens, bullets, screen, ship)
+
 
 
 run_game()

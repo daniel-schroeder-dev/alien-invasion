@@ -3,8 +3,9 @@ from pygame.sprite import Sprite
 
 class Alien(Sprite):
 
-    def __init__(self):
+    def __init__(self, screen_width=''):
         super().__init__()
+        self.screen_width = screen_width
 
         self.image = pygame.image.load('./images/alien.bmp')
         self.rect = self.image.get_rect()
@@ -13,3 +14,21 @@ class Alien(Sprite):
         self.rect.y = self.rect.height
 
         self.x = float(self.rect.x)
+
+        self.moving_right = True
+        self.hit_left_edge = False
+        self.hit_right_edge = False
+
+    def update(self):
+        if self.moving_right:
+            self.rect.x += 1
+            # if self.rect.x > self.start_x + self.rect.width * 2:
+            if self.rect.x > self.screen_width - self.rect.width:
+                self.moving_right = False
+                self.hit_right_edge = True
+        else:
+            self.rect.x -= 1
+            # if self.rect.x == self.start_x - self.rect.width / 2:
+            if self.rect.x <= self.rect.width / 2:
+                self.moving_right = True
+                self.hit_left_edge = True
