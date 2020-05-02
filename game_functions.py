@@ -7,6 +7,12 @@ from pygame.sprite import Group
 from bullet import Bullet
 from alien import Alien
 
+def alien_reach_bottom(aliens, screen):
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen.get_rect().bottom:
+            return True
+    return False
+    
 def change_alien_fleet_direction(ai_settings, aliens):
     ai_settings.alien_fleet_direction *= -1
     for alien in aliens.sprites():
@@ -42,20 +48,19 @@ def check_keyup_events(event, ship):
 
 def create_alien(ai_settings, alien_num, row_num):
     alien = Alien(ai_settings)
-    alien.rect.x = alien.rect.width + alien.rect.width * 2 * alien_num
+    alien.rect.x = alien.rect.width  + alien.rect.width * 2 * alien_num
     alien.rect.y = alien.rect.height + alien.rect.height * 2 * row_num
     alien.start_x = alien.rect.x
     alien.start_y = alien.rect.y
     return alien
 
-def create_alien_fleet(screen, ai_settings, ship_height):
+def create_alien_fleet(aliens, screen, ai_settings, ship_height):
     num_aliens = get_num_aliens(ai_settings, screen)
     num_rows = get_num_rows(ai_settings, ship_height)
-    aliens = Group()
+    aliens.empty()
     for row_num in range(num_rows):
         for alien_num in range(num_aliens):
             aliens.add(create_alien(ai_settings, alien_num, row_num))
-    return aliens
 
 def detect_edge_collision(aliens, screen):
     for alien in aliens.sprites():
@@ -83,12 +88,16 @@ def get_num_rows(ai_settings, ship_height):
     return int(avail_screen_height / (alien_height * 2))
 
 def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
-    stats.ships_left -= 1
-    aliens.empty()
-    bullets.empty()
-    ship.center_ship()
-    sleep(0.5)
-    return create_alien_fleet(screen, ai_settings, ship.rect.height)
+    if stats.ships_left > 1:
+        stats.ships_left -= 1
+        aliens.empty()
+        bullets.empty()
+        ship.center_ship()
+        sleep(0.5)
+        create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
+    else:
+        stats.game_active = False
+
 
 def update_screen(ai_settings, aliens, bullets, screen, ship):
     """Update images on the screen and flip to the new screen."""

@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 from pygame.sprite import Group
 
@@ -16,28 +18,34 @@ def run_game():
 
     ship = Ship(screen, ai_settings.ship_speed_factor)
     bullets = Group()
-    aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
+    aliens = Group()
+    gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
     stats = GameStats(ai_settings)
-
-    it = 0
+    clock = pygame.time.Clock()
 
     # Main game loop.
     while True:
-        it += 1
+        clock.tick(60)
         gf.check_events(ai_settings, bullets, screen, ship)
-        ship.update()
-        gf.update_bullets(aliens, bullets)
-        if len(aliens) is 0:
-            aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
-            bullets.empty()
-        if not (it % 3):
+
+        if stats.game_active:
+            ship.update()
+            gf.update_bullets(aliens, bullets)
+            
+            if len(aliens) is 0:
+                aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
+                bullets.empty()
+            
             aliens.update()
-            if pygame.sprite.spritecollideany(ship, aliens):
-                aliens = gf.reset_game(ai_settings, aliens, 
-                        bullets, screen, ship, stats)
+            
             if gf.detect_edge_collision(aliens, screen):
                 gf.change_alien_fleet_direction(ai_settings, aliens)
             
+            if pygame.sprite.spritecollideany(ship, aliens) or \
+                    gf.alien_reach_bottom(aliens, screen):
+                gf.reset_game(ai_settings, aliens, 
+                        bullets, screen, ship, stats)
+        
         gf.update_screen(ai_settings, aliens, bullets, screen, ship)
 
 run_game()
