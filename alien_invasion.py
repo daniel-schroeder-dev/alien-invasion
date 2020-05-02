@@ -3,6 +3,7 @@ from pygame.sprite import Group
 
 from settings import Settings
 from ship import Ship
+from game_stats import GameStats
 import game_functions as gf
 
 def run_game():
@@ -16,6 +17,7 @@ def run_game():
     ship = Ship(screen, ai_settings.ship_speed_factor)
     bullets = Group()
     aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
+    stats = GameStats(ai_settings)
 
     it = 0
 
@@ -30,6 +32,9 @@ def run_game():
             bullets.empty()
         if not (it % 3):
             aliens.update()
+            if pygame.sprite.spritecollideany(ship, aliens):
+                aliens = gf.reset_game(ai_settings, aliens, 
+                        bullets, screen, ship, stats)
             if gf.detect_edge_collision(aliens, screen):
                 gf.change_alien_fleet_direction(ai_settings, aliens)
             

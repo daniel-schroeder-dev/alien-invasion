@@ -1,4 +1,5 @@
 import sys
+from time import sleep
 
 import pygame
 from pygame.sprite import Group
@@ -81,6 +82,14 @@ def get_num_rows(ai_settings, ship_height):
         (ship_height + alien_height * 3))
     return int(avail_screen_height / (alien_height * 2))
 
+def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
+    stats.ships_left -= 1
+    aliens.empty()
+    bullets.empty()
+    ship.center_ship()
+    sleep(0.5)
+    return create_alien_fleet(screen, ai_settings, ship.rect.height)
+
 def update_screen(ai_settings, aliens, bullets, screen, ship):
     """Update images on the screen and flip to the new screen."""
     screen.fill(ai_settings.bg_color)
@@ -102,5 +111,5 @@ def update_bullets(aliens, bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-    collisions = pygame.sprite.groupcollide(bullets, aliens, False, True)
+    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
 
