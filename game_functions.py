@@ -18,7 +18,7 @@ def change_alien_fleet_direction(ai_settings, aliens):
     for alien in aliens.sprites():
         alien.rect.y += ai_settings.alien_vertical_speed_factor
 
-def check_events(ai_settings, bullets, screen, ship):
+def check_events(ai_settings, bullets, button, screen, ship, stats):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -27,6 +27,9 @@ def check_events(ai_settings, bullets, screen, ship):
             check_keydown_events(ai_settings, bullets, event, screen, ship)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            check_play_button(button, mouse_x, mouse_y, stats)
 
 def check_keydown_events(ai_settings, bullets, event, screen, ship):
     """Handle keydown events."""
@@ -45,6 +48,12 @@ def check_keyup_events(event, ship):
         ship.moving_right = False
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
+
+def check_play_button(button, mouse_x, mouse_y, stats):
+    if button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
+        stats.game_active = True
+        stats.reset_stats()
+        pygame.mouse.set_visible(False)
 
 def create_alien(ai_settings, alien_num, row_num):
     alien = Alien(ai_settings)
@@ -88,18 +97,18 @@ def get_num_rows(ai_settings, ship_height):
     return int(avail_screen_height / (alien_height * 2))
 
 def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
-    if stats.ships_left > 1:
-        stats.ships_left -= 1
-        aliens.empty()
-        bullets.empty()
-        ship.center_ship()
-        sleep(0.5)
-        create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
-    else:
+    stats.ships_left -= 1
+    aliens.empty()
+    bullets.empty()
+    ship.center_ship()
+    sleep(0.5)
+    create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
+    if not stats.ships_left:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
 
 
-def update_screen(ai_settings, aliens, bullets, screen, ship):
+def update_screen(ai_settings, aliens, bullets, button, screen, ship, stats):
     """Update images on the screen and flip to the new screen."""
     screen.fill(ai_settings.bg_color)
     
@@ -108,6 +117,9 @@ def update_screen(ai_settings, aliens, bullets, screen, ship):
 
     ship.blitme()
     aliens.draw(screen)
+
+    if not stats.game_active:
+        button.draw()
 
     # Make the most recently drawn screen visible.
     pygame.display.flip()

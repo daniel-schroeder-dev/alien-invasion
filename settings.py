@@ -16,8 +16,8 @@ class Settings:
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 10
 
-        self.alien_speed_factor = 2
-        self.alien_vertical_speed_factor = 10
+        self.alien_speed_factor = 10
+        self.alien_vertical_speed_factor = 20
 
         RIGHT = 1
         LEFT = -1

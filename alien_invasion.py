@@ -6,6 +6,7 @@ from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 from game_stats import GameStats
+from button import Button
 import game_functions as gf
 
 def run_game():
@@ -22,11 +23,12 @@ def run_game():
     gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
     stats = GameStats(ai_settings)
     clock = pygame.time.Clock()
+    button = Button("Play", screen)
 
     # Main game loop.
     while True:
         clock.tick(60)
-        gf.check_events(ai_settings, bullets, screen, ship)
+        gf.check_events(ai_settings, bullets, button, screen, ship, stats)
 
         if stats.game_active:
             ship.update()
@@ -45,7 +47,8 @@ def run_game():
                     gf.alien_reach_bottom(aliens, screen):
                 gf.reset_game(ai_settings, aliens, 
                         bullets, screen, ship, stats)
-        
-        gf.update_screen(ai_settings, aliens, bullets, screen, ship)
+
+        gf.update_screen(ai_settings, aliens, bullets, 
+                button, screen, ship, stats)
 
 run_game()
