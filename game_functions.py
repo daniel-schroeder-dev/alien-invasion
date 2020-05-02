@@ -24,14 +24,15 @@ def check_events(ai_settings, bullets, button, screen, ship, stats):
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(ai_settings, bullets, event, screen, ship)
+            check_keydown_events(ai_settings, bullets, event, 
+                    screen, ship, stats)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
             check_play_button(button, mouse_x, mouse_y, stats)
 
-def check_keydown_events(ai_settings, bullets, event, screen, ship):
+def check_keydown_events(ai_settings, bullets, event, screen, ship, stats):
     """Handle keydown events."""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -41,6 +42,8 @@ def check_keydown_events(ai_settings, bullets, event, screen, ship):
         fire_bullet(ai_settings, bullets, screen, ship)
     elif event.key == pygame.K_q:
         sys.exit()
+    elif event.key == pygame.K_p:
+        start_game(stats)
 
 def check_keyup_events(event, ship):
     """Handle keyup events."""
@@ -51,10 +54,8 @@ def check_keyup_events(event, ship):
 
 def check_play_button(button, mouse_x, mouse_y, stats):
     if button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
-        stats.game_active = True
-        stats.reset_stats()
-        pygame.mouse.set_visible(False)
-
+        start_game(stats)
+        
 def create_alien(ai_settings, alien_num, row_num):
     alien = Alien(ai_settings)
     alien.rect.x = alien.rect.width  + alien.rect.width * 2 * alien_num
@@ -107,6 +108,10 @@ def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
+def start_game(stats):
+    stats.game_active = True
+    stats.reset_stats()
+    pygame.mouse.set_visible(False)
 
 def update_screen(ai_settings, aliens, bullets, button, screen, ship, stats):
     """Update images on the screen and flip to the new screen."""
