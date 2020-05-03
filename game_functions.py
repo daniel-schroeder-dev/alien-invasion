@@ -12,7 +12,7 @@ def alien_reach_bottom(aliens, screen):
         if alien.rect.bottom >= screen.get_rect().bottom:
             return True
     return False
-    
+
 def change_alien_fleet_direction(ai_settings, aliens):
     ai_settings.alien_fleet_direction *= -1
     for alien in aliens.sprites():
@@ -24,7 +24,7 @@ def check_events(ai_settings, bullets, button, screen, ship, stats):
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(ai_settings, bullets, event, 
+            check_keydown_events(ai_settings, bullets, event,
                     screen, ship, stats)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
@@ -55,7 +55,7 @@ def check_keyup_events(event, ship):
 def check_play_button(button, mouse_x, mouse_y, stats):
     if button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
         start_game(stats)
-        
+
 def create_alien(ai_settings, alien_num, row_num):
     alien = Alien(ai_settings)
     alien.rect.x = alien.rect.width  + alien.rect.width * 2 * alien_num
@@ -76,7 +76,7 @@ def detect_edge_collision(aliens, screen):
     for alien in aliens.sprites():
         if alien.rect.right >= screen.get_rect().right:
             return True
-        elif alien.rect.left == 0:
+        elif alien.rect.left <= 0:
             return True
     return False
 
@@ -93,7 +93,7 @@ def get_num_aliens(ai_settings, screen):
 def get_num_rows(ai_settings, ship_height):
     alien_height = Alien(ai_settings).rect.height
     avail_screen_height = (
-        ai_settings.screen_height - 
+        ai_settings.screen_height -
         (ship_height + alien_height * 3))
     return int(avail_screen_height / (alien_height * 2))
 
@@ -102,8 +102,9 @@ def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
     aliens.empty()
     bullets.empty()
     ship.center_ship()
-    sleep(0.5)
+    ai_settings.initialize_dynamic_settings()
     create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
+    sleep(0.5)
     if not stats.ships_left:
         stats.game_active = False
         pygame.mouse.set_visible(True)
@@ -116,7 +117,7 @@ def start_game(stats):
 def update_screen(ai_settings, aliens, bullets, button, screen, ship, stats):
     """Update images on the screen and flip to the new screen."""
     screen.fill(ai_settings.bg_color)
-    
+
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
@@ -137,5 +138,5 @@ def update_bullets(aliens, bullets):
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
 
-    collisions = pygame.sprite.groupcollide(bullets, aliens, True, True)
+    collisions = pygame.sprite.groupcollide(bullets, aliens, False, True)
 

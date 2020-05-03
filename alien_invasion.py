@@ -35,8 +35,9 @@ def run_game():
             gf.update_bullets(aliens, bullets)
 
             if len(aliens) is 0:
-                gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
                 bullets.empty()
+                ai_settings.increase_speed()
+                gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
 
             aliens.update()
 
