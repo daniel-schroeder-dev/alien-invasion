@@ -109,11 +109,13 @@ def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
     sleep(0.5)
     if not stats.ships_left:
         stats.game_active = False
+        stats.level = 1
         pygame.mouse.set_visible(True)
 
 def start_game(scoreboard, stats):
     stats.game_active = True
     stats.reset_stats()
+    scoreboard.prep_level()
     scoreboard.prep_score()
     scoreboard.prep_high_score()
     pygame.mouse.set_visible(False)

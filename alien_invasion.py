@@ -40,6 +40,8 @@ def run_game():
             if len(aliens) is 0:
                 bullets.empty()
                 ai_settings.increase_speed()
+                stats.level += 1
+                scoreboard.prep_level()
                 ai_settings.alien_points += 25
                 gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
 
