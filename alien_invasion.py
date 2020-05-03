@@ -33,22 +33,22 @@ def run_game():
         if stats.game_active:
             ship.update()
             gf.update_bullets(aliens, bullets)
-            
+
             if len(aliens) is 0:
-                aliens = gf.create_alien_fleet(screen, ai_settings, ship.rect.height)
+                gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
                 bullets.empty()
-            
+
             aliens.update()
-            
+
             if gf.detect_edge_collision(aliens, screen):
                 gf.change_alien_fleet_direction(ai_settings, aliens)
-            
+
             if pygame.sprite.spritecollideany(ship, aliens) or \
                     gf.alien_reach_bottom(aliens, screen):
-                gf.reset_game(ai_settings, aliens, 
+                gf.reset_game(ai_settings, aliens,
                         bullets, screen, ship, stats)
 
-        gf.update_screen(ai_settings, aliens, bullets, 
+        gf.update_screen(ai_settings, aliens, bullets,
                 button, screen, ship, stats)
 
 run_game()
