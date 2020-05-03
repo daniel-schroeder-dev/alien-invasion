@@ -7,14 +7,14 @@ class Settings:
         self.screen_height = 600
         self.bg_color = (230, 230, 230)
 
-        self.ships_limit = 2
+        self.ships_limit = 1
 
-        self.bullet_width = 500
+        self.bullet_width = 900
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 10
 
-        self.alien_vertical_speed_factor = 10
+        self.alien_vertical_speed_factor = 50
 
         self.speedup_scale = 1
 

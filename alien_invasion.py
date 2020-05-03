@@ -30,7 +30,8 @@ def run_game():
     # Main game loop.
     while True:
         clock.tick(60)
-        gf.check_events(ai_settings, bullets, button, screen, ship, stats)
+        gf.check_events(ai_settings, bullets, button, scoreboard,
+                screen, ship, stats)
 
         if stats.game_active:
             ship.update()

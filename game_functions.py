@@ -18,21 +18,23 @@ def change_alien_fleet_direction(ai_settings, aliens):
     for alien in aliens.sprites():
         alien.rect.y += ai_settings.alien_vertical_speed_factor
 
-def check_events(ai_settings, bullets, button, screen, ship, stats):
+def check_events(ai_settings, bullets, button, scoreboard,
+        screen, ship, stats):
     """Respond to keypresses and mouse events."""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(ai_settings, bullets, event,
-                    screen, ship, stats)
+                    scoreboard, screen, ship, stats)
         elif event.type == pygame.KEYUP:
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(button, mouse_x, mouse_y, stats)
+            check_play_button(button, mouse_x, mouse_y, scoreboard, stats)
 
-def check_keydown_events(ai_settings, bullets, event, screen, ship, stats):
+def check_keydown_events(ai_settings, bullets, event, scoreboard,
+        screen, ship, stats):
     """Handle keydown events."""
     if event.key == pygame.K_RIGHT:
         ship.moving_right = True
@@ -43,7 +45,7 @@ def check_keydown_events(ai_settings, bullets, event, screen, ship, stats):
     elif event.key == pygame.K_q:
         sys.exit()
     elif event.key == pygame.K_p:
-        start_game(stats)
+        start_game(scoreboard, stats)
 
 def check_keyup_events(event, ship):
     """Handle keyup events."""
@@ -52,9 +54,9 @@ def check_keyup_events(event, ship):
     elif event.key == pygame.K_LEFT:
         ship.moving_left = False
 
-def check_play_button(button, mouse_x, mouse_y, stats):
+def check_play_button(button, mouse_x, mouse_y, scoreboard, stats):
     if button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
-        start_game(stats)
+        start_game(scoreboard, stats)
 
 def create_alien(ai_settings, alien_num, row_num):
     alien = Alien(ai_settings)
@@ -109,9 +111,11 @@ def reset_game(ai_settings, aliens, bullets, screen, ship, stats):
         stats.game_active = False
         pygame.mouse.set_visible(True)
 
-def start_game(stats):
+def start_game(scoreboard, stats):
     stats.game_active = True
     stats.reset_stats()
+    scoreboard.prep_score()
+    scoreboard.prep_high_score()
     pygame.mouse.set_visible(False)
 
 def update_screen(ai_settings, aliens, bullets, button,
@@ -147,4 +151,7 @@ def update_bullets(ai_settings, aliens, bullets, scoreboard, stats):
         for aliens in collisions.values():
             stats.score += ai_settings.alien_points * len(aliens)
             scoreboard.prep_score()
+        if stats.score > stats.high_score:
+            stats.high_score = stats.score
+            scoreboard.prep_high_score()
 
