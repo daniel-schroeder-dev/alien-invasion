@@ -6,6 +6,7 @@ from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 from game_stats import GameStats
+from scoreboard import Scoreboard
 from button import Button
 import game_functions as gf
 
@@ -22,6 +23,7 @@ def run_game():
     aliens = Group()
     gf.create_alien_fleet(aliens, screen, ai_settings, ship.rect.height)
     stats = GameStats(ai_settings)
+    scoreboard = Scoreboard(ai_settings, screen, stats)
     clock = pygame.time.Clock()
     button = Button("Play", screen)
 
@@ -50,6 +52,6 @@ def run_game():
                         bullets, screen, ship, stats)
 
         gf.update_screen(ai_settings, aliens, bullets,
-                button, screen, ship, stats)
+                button, scoreboard, screen, ship, stats)
 
 run_game()

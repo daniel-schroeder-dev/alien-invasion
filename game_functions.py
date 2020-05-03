@@ -114,7 +114,8 @@ def start_game(stats):
     stats.reset_stats()
     pygame.mouse.set_visible(False)
 
-def update_screen(ai_settings, aliens, bullets, button, screen, ship, stats):
+def update_screen(ai_settings, aliens, bullets, button,
+        scoreboard, screen, ship, stats):
     """Update images on the screen and flip to the new screen."""
     screen.fill(ai_settings.bg_color)
 
@@ -123,6 +124,8 @@ def update_screen(ai_settings, aliens, bullets, button, screen, ship, stats):
 
     ship.blitme()
     aliens.draw(screen)
+
+    scoreboard.show_score()
 
     if not stats.game_active:
         button.draw()
