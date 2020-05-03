@@ -133,7 +133,7 @@ def update_screen(ai_settings, aliens, bullets, button,
     # Make the most recently drawn screen visible.
     pygame.display.flip()
 
-def update_bullets(aliens, bullets):
+def update_bullets(ai_settings, aliens, bullets, scoreboard, stats):
     """Update position of bullets and remove old bullets."""
     bullets.update()
 
@@ -142,4 +142,9 @@ def update_bullets(aliens, bullets):
             bullets.remove(bullet)
 
     collisions = pygame.sprite.groupcollide(bullets, aliens, False, True)
+
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += ai_settings.alien_points * len(aliens)
+            scoreboard.prep_score()
 

@@ -9,7 +9,7 @@ class Settings:
 
         self.ships_limit = 2
 
-        self.bullet_width = 900
+        self.bullet_width = 500
         self.bullet_height = 15
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 10
@@ -29,6 +29,8 @@ class Settings:
         LEFT = -1
 
         self.alien_fleet_direction = RIGHT
+
+        self.alien_points = 50
 
     def increase_speed(self):
         self.ship_speed_factor += self.speedup_scale
